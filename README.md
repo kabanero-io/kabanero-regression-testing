@@ -1,4 +1,4 @@
-# bkabanero-regression-testing
+# kabanero-regression-testing
 Work items and scripts for builds and test framework
 
 ## How to Run Tests
