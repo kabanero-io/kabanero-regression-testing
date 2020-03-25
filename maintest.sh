@@ -13,6 +13,7 @@ fi
 cd ${MAIN_DIR}/tests
 
 let anyfail=0
+failed=""
 
 # loop on all directories
 for testcase in `ls -d *`; do
@@ -23,12 +24,14 @@ for testcase in `ls -d *`; do
        ./test.sh
        if [ $? -ne 0 ]; then
          let anyfail+=1
+         failed = "$failed $testcase"
        fi
        # do something to publish test results
      elif [ -f test.yaml ]; then
        ansible-playbook test.yaml
        if [ $? -ne 0 ]; then
          let anyfail+=1
+         failed = "$failed $testcase"
        fi
        # do something to publish test results
      else
@@ -41,7 +44,7 @@ done
 if [ $anyfail -eq 0 ]; then
    echo "*** All tests ran without error"
 else
-   echo "*** There were $anyfail test failures"
+   echo "*** There were $anyfail test failures - $failed"
 fi 
 
 exit $anyfail

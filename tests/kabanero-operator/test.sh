@@ -1,6 +1,7 @@
 #!/bin/bash
 
 let anyfail=0
+failed=""
 
 # loop on all files, with exceptions
 for test in `ls -f *`; do
@@ -18,6 +19,7 @@ for test in `ls -f *`; do
      ./$test
      if [ $? -ne 0 ]; then
        let anyfail+=1
+       failed = "$failed $testcase"
      fi
    fi
 done
@@ -26,7 +28,7 @@ done
 if [ $anyfail -eq 0 ]; then
    echo "*** All tests ran without error"
 else
-   echo "*** There were $anyfail test failures"
+   echo "*** There were $anyfail test failures - $failed"
 fi 
 
 exit $anyfail
