@@ -1,14 +1,6 @@
 #!/bin/bash
-# *****************************************************************
-#
-# Licensed Materials - Property of IBM
-#
-# (C) Copyright IBM Corp. 2020. All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-#
-# *****************************************************************
+
+let anyfail=0
 
 # loop on all files, with exceptions
 for test in `ls -f *`; do
@@ -24,6 +16,17 @@ for test in `ls -f *`; do
    elif [ -x "$test" ]; then 
      echo "*** Running test $test"
      ./$test
+     if [ $? -ne 0 ]; then
+       let anyfail+=1
+     fi
    fi
 done
 
+# Summarize results
+if [ $anyfail -eq 0 ]; then
+   echo "*** All tests ran without error"
+else
+   echo "*** There were $anyfail test failures"
+fi 
+
+exit $anyfail
