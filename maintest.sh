@@ -16,22 +16,24 @@ let anyfail=0
 
 # loop on all directories
 for testcase in `ls -d *`; do
-   echo "*** Running testcase $testcase"
-   cd $testcase
-   if [ -f test.sh ]; then
-     ./test.sh
-     if [ $? -ne 0 ]; then
-       let anyfail+=1
+   if [ -d "$testcase" ] ; then
+     echo "*** Running testcase $testcase"
+     cd $testcase
+     if [ -f test.sh ]; then
+       ./test.sh
+       if [ $? -ne 0 ]; then
+         let anyfail+=1
+       fi
+       # do something to publish test results
+     elif [ -f test.yaml ]; then
+       ansible-playbook test.yaml
+       if [ $? -ne 0 ]; then
+         let anyfail+=1
+       fi
+       # do something to publish test results
+     else
+       echo "*** No test found in $testcase"
      fi
-     # do something to publish test results
-   elif [ -f test.yaml ]; then
-     ansible-playbook test.yaml
-     if [ $? -ne 0 ]; then
-       let anyfail+=1
-     fi
-     # do something to publish test results
-   else
-     echo "*** No test found in $testcase"
    fi
 done
 
