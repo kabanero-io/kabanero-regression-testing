@@ -24,14 +24,14 @@ for testcase in `ls -d *`; do
        ./test.sh
        if [ $? -ne 0 ]; then
          let anyfail+=1
-         failed = "$failed $testcase"
+         failed="$failed $testcase"
        fi
        # do something to publish test results
      elif [ -f test.yaml ]; then
        ansible-playbook test.yaml
        if [ $? -ne 0 ]; then
          let anyfail+=1
-         failed = "$failed $testcase"
+         failed="$failed $testcase"
        fi
        # do something to publish test results
      else

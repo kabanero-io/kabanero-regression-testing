@@ -19,7 +19,7 @@ for test in `ls -f *`; do
      ./$test
      if [ $? -ne 0 ]; then
        let anyfail+=1
-       failed = "$failed $testcase"
+       failed="$failed $test"
      fi
    fi
 done
