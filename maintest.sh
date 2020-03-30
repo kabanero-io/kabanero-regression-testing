@@ -42,9 +42,9 @@ done
 
 # Summarize results
 if [ $anyfail -eq 0 ]; then
-   echo "*** All tests ran without error"
+   echo "*** All testcases ran without error"
 else
-   echo "*** There were $anyfail test failures - $failed"
+   echo "*** There were $anyfail testcase failures - $failed"
 fi 
 
 exit $anyfail

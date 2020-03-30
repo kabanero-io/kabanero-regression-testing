@@ -21,6 +21,7 @@ for test in `ls -f *`; do
        let anyfail+=1
        failed="$failed $test"
      fi
+     sleep 300
    fi
 done
 
