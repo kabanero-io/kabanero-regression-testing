@@ -35,6 +35,6 @@ mkdir kabanero-regression-testing/tests/mynewtest
 - In that directory create your new XXXX-mynewtest.sh and / or XXXX-mynewtest.yaml
   - where XXXX is some numeric which orders the test sequence based on alphanumeric sort
 
-- Any other required / support files should be placed in that directory
+- Any other required / support files should be placed in that directory, do not prefix with XXXX
 - maintest.sh will iterate through all the test directories and run each test
 
