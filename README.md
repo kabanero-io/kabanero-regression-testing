@@ -8,7 +8,7 @@ Work items and scripts for builds and test framework
 - Clone this repository
 
 ```
-git clone https://github.ibm.com/kabanero-op/kabanero-regression-testing
+git clone https://github.com/kabanero-io/kabanero-regression-testing.git
 cd kabanero-regression-testing
 ```
 
