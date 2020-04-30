@@ -6,6 +6,7 @@
 set -Eeox pipefail
 
 namespace=kabanero
+SLEEP_LONG="60"
 
 ORIGYAML=$(oc get -n ${namespace} kabanero kabanero --export -o=json)
 
@@ -18,7 +19,7 @@ LOOP_COUNT=0
 until [ "$VER" == "0.2.26" ] 
 do
   VER=$(oc -n ${namespace} get stack java-microprofile -o jsonpath='{.status.versions[0].version}')
-  sleep 20
+  sleep $SLEEP_LONG
   LOOP_COUNT=`expr $LOOP_COUNT + 1`
   if [ $LOOP_COUNT -gt 10 ] ; then
     echo "Timed out waiting for java-microprofile stack version to update"
@@ -31,7 +32,7 @@ LOOP_COUNT=0
 until [ "$URL" == "https://github.com/kabanero-io/kabanero-pipelines/releases/download/0.6.1/default-kabanero-pipelines.tar.gz" ] 
 do
   URL=$(oc -n ${namespace} get stack java-microprofile -o jsonpath='{.status.versions[0].pipelines[0].url}')
-  sleep 20
+  sleep $SLEEP_LONG
   LOOP_COUNT=`expr $LOOP_COUNT + 1`
   if [ $LOOP_COUNT -gt 10 ] ; then
     echo "Timed out waiting for java-microprofile stack URL to update"
