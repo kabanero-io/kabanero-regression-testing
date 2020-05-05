@@ -5,7 +5,7 @@
 set -Eeox pipefail
 
 namespace=kabanero
-SLEEP_LONG="60"
+SLEEP_SHORT="5"
 
 ORIGYAML=$(oc get -n ${namespace} stack java-microprofile --export -o=json)
 
@@ -16,9 +16,9 @@ LOOP_COUNT=0
 until [ "$STATUS" == "inactive" ] 
 do
   STATUS=$(oc -n ${namespace} get stack java-microprofile -o jsonpath='{.status.versions[0].status}')
-  sleep $SLEEP_LONG
+  sleep $SLEEP_SHORT
   LOOP_COUNT=`expr $LOOP_COUNT + 1`
-  if [ $LOOP_COUNT -gt 10 ] ; then
+  if [ $LOOP_COUNT -gt 120 ] ; then
     echo "Timed out waiting for java-microprofile stack to deactivate"
   exit 1
  fi
