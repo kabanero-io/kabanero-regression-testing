@@ -44,4 +44,8 @@ else
    echo "*** There were $anyfail testcase failures - $failed"
 fi 
 
+# get the logs
+cd $(dirname $(readlink -f $0))
+scripts/kabanero-mustgather.sh
+
 exit $anyfail
