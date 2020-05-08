@@ -39,3 +39,56 @@ mkdir kabanero-regression-testing/tests/mynewtest
 - Any other required / support files should be placed in that directory, do not prefix with XXXX
 - maintest.sh will iterate through all the test directories and run each test
 
+## Test Framework Project Structure
+```
+.
+├── maintest.sh
+├── README.md
+├── scripts
+│   ├── crc_install.shcrc_install.sh
+│   └── kabanero-mustgather.sh
+├── build                                 # .gitignore
+│   ├── kabanero-operator                 # Testsuite directory
+│   │   └── 00-credentials                # Testcase directory
+│   │       ├── PASSED.TXT|FAILED.TXT     # File name result
+│   │       ├── output                    # OCP/misc logs
+│   │       └── results                   # Testcase standard out/err logs
+│   │           ├── junit.html            # Junit logs
+│   │           ├── 00-credentials.sh.stderr.txt
+│   │           └── 00-credentials.sh.stdeout.txt
+...
+│   └── testsuite-example                 # Testsuite directory
+│       └── XX-example                    # Testcase directory
+│           ├── PASSED.TXT|FAILED.TXT     # File name result
+│           ├── output                    # OCP/misc logs
+│           └── results                   # Testcase standard out/err logs
+│               ├── junit.html            # Junit logs
+│               ├── XX-example.stderr.txt
+│               └── XX-example.stdeout.txt
+└── tests
+    ├── default.yaml
+    ├── kabanero-operator
+    │   ├── 00-credentials.sh
+    │   ├── 10-java-microprofile.sh
+    │   ├── 11-java-spring-boot2.sh
+    │   ├── 12-nodejs.sh
+    │   ├── 13-nodejs-express.sh
+    │   ├── 14-java-openliberty.sh
+    │   ├── 20-delete-pipeline.sh
+    │   ├── 21-delete-stack.sh
+    │   ├── 22-update-index.sh
+    │   ├── 23-deactivate-stack.sh
+    │   ├── pipelinerun.sh
+    │   ├── rstr.sh
+    │   ├── support-22-merge.yaml
+    │   └── support-23-merge.yaml
+    ├── pipeline
+    │   ├── java-microprofile.sh
+    │   ├── java-spring-boot2.sh
+    │   ├── java-websphere-traditional.sh
+    │   ├── nodejs-express.sh
+    │   ├── nodejs-loopback.sh
+    │   ├── nodejs.sh
+    │   └── pipelinerun.sh
+    └── serving.yaml
+```
