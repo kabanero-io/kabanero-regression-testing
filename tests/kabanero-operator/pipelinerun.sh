@@ -106,6 +106,10 @@ do
 		echo "PipelineRun ${PIPELINE_RUN} timed out"
 		exit 1
 	fi
+	if [ "$STATUS" == "False" ] && [ "$TYPE" == "Succeeded" ] && [ "$REASON" == "CouldntGetPipeline" ]; then
+		echo "PipelineRun ${PIPELINE_RUN} Failed"
+		exit 1
+	fi
 	sleep $SLEEP_LONG
 done
 
