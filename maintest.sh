@@ -45,8 +45,7 @@ else
 fi 
 
 # get the logs
-LOGS_DIR=$httpLogDir
-cd $(dirname $(readlink -f $0))/scripts
-./kabanero-mustgather.sh
+cd $(dirname $(readlink -f $0))
+scripts/kabanero-mustgather.sh
 
 exit $anyfail
