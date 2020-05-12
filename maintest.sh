@@ -1,12 +1,18 @@
 #!/bin/bash
-
+set -x
 if ! oc whoami; then
     echo "Must login using oc before running"
     exit 1
 fi
 
 # Time to run tests now
-cd $(dirname $(readlink -f $0))/tests
+scriptHome=$(dirname $(readlink -f $0))
+level=$(date "+%Y-%m-%d_%H%M%S")
+buildPath=$scriptHome/build_${level}
+cd $scriptHome/tests
+
+mkdir -p $buildPath
+ln -fsvn $buildPath $scriptHome/build
 
 let anyfail=0
 failed=""
@@ -15,20 +21,35 @@ failed=""
 regressionTestScripts=$(find . -name [0-9]* -type f |egrep '*.sh|*.yml|*.yaml'| sort)
 for testcase in $( echo "$regressionTestScripts") ; do
    if [ -f "$testcase" ] ; then
+     testsuiteName=$(basename $(dirname $testcase))
+     testcaseScript=$(basename "$testcase")
+     testcaseName=${testcaseScript%.*}
+     testcasePath=$buildPath/$testsuiteName/$testcaseName
+     outputPath=$testcasePath/output
+     resultsPath=$testcasePath/results
+     mkdir -p $outputPath
+     mkdir -p $resultsPath
      echo "*** Running testcase $testcase"
-     cd $(dirname "$testcase")
+     cd $(dirname "$testcase") 
      if [[ $testcase == *.sh ]] ; then
-       ./$(basename "$testcase")
+       ./$testcaseScript > >(tee -a $resultsPath/${testcaseScript}.stdout.txt) 2> >(tee -a $resultsPath/${testcaseScript}.stderr.txt >&2)
        if [ $? -ne 0 ]; then
          let anyfail+=1
          failed="$failed $testcase"
+         touch $testcasePath/FAILED.TXT
+       else
+         touch $testcasePath/PASSED.TXT
        fi
+
      fi
      if [[ $testcase == *.yaml ]] || [[ $testcase == *.yml ]] ; then
-       ansible-playbook $(basename "$testcase")
+       ansible-playbook $testcaseScript  > >(tee -a $resultsPath/${testcaseScript}.stdout.txt) 2> >(tee -a $resultsPath/${testcaseScript}.stderr.txt >&2)
        if [ $? -ne 0 ]; then
          let anyfail+=1
          failed="$failed $testcase"
+         touch $testcasePath/FAILED.TXT
+       else
+         touch $testcasePath/PASSED.TXT
        fi
      fi
      cd -
@@ -45,7 +66,7 @@ else
 fi 
 
 # get the logs
-cd $(dirname $(readlink -f $0))
-scripts/kabanero-mustgather.sh
+cd $buildPath
+$scriptHome/scripts/kabanero-mustgather.sh
 
 exit $anyfail
