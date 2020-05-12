@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 if ! oc whoami; then
     echo "Must login using oc before running"
     exit 1
