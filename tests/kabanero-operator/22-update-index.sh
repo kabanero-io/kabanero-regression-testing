@@ -10,7 +10,7 @@ namespace=kabanero
 ORIGYAML=$(oc get -n ${namespace} kabanero kabanero --export -o=json)
 
 # Update kabanero stack url
-oc patch -n ${namespace} kabanero kabanero --type merge --patch "$(cat $(dirname "$0")/22-merge.yaml)"
+oc patch -n ${namespace} kabanero kabanero --type merge --patch "$(cat $(dirname "$0")/support-22-merge.yaml)"
 
 
 echo "Waiting for quarkus stack version to update"
