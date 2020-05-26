@@ -7,7 +7,7 @@ set -Eeuox pipefail
 namespace=kabanero
 
 # Check stack exists
-if ! oc -n ${namespace} get stack bbbquarkus
+if ! oc -n ${namespace} get stack quarkus
 then
   echo "Missing ${namespace} stack quarkus"
   exit 1
