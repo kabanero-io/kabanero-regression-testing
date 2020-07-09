@@ -10,16 +10,40 @@ scriptHome=$(dirname $(readlink -f $0))
 level=$(date "+%Y-%m-%d_%H%M%S")
 buildPath=$scriptHome/build_${level}
 cd $scriptHome/tests
-
 mkdir -p $buildPath
 ln -fsvn $buildPath $scriptHome/build
 
 let anyfail=0
 failed=""
 
+
+# find any bucket.yml and run them to load outside test repos
+testDirs=()
+bucketTests=()
+buckets=$(find . -name "bucket.y*ml" -type f | sort)
+for bucket in $( echo "$buckets") ; do
+   bucketName=$(basename $(dirname $bucket))
+   bucketHome=$(dirname $bucket)
+   outputPath=$buildPath/$bucketName/output
+   mkdir -p $outputPath
+   gitRepo=$(cat $bucket | grep -i git_repo: | awk '{print $2}')
+   testDir=$(cat $bucket | grep -i test_dir: | awk '{print $2}')
+   cd $bucketName
+   git init .
+   git remote add origin $gitRepo
+   git pull origin master
+   cd ..
+   dir=$(find ./$bucketName -name "$testDir" -type d)
+   testDirs+=$dir" "
+   bucketTests+=$(ls -rtd $dir/*)" "
+done
+
+
 # find any .sh|test.yaml|test.yml
 regressionTestScripts=$(find . -name [0-9]* -type f |egrep '*.sh|*.yml|*.yaml'| sort)
-for testcase in $( echo "$regressionTestScripts") ; do
+#remove duplicates that may have been picked up
+allTests=$(echo $bucketTests" "$regressionTestScripts  | tr ' ' '\n' | sort -u)
+for testcase in $( echo "$allTests") ; do
    if [ -f "$testcase" ] ; then
      testsuiteName=$(basename $(dirname $testcase))
      testcaseScript=$(basename "$testcase")
@@ -31,8 +55,9 @@ for testcase in $( echo "$regressionTestScripts") ; do
      mkdir -p $resultsPath
      echo "*** Running testcase $testcase"
      cd $(dirname "$testcase") 
+     
      if [[ $testcase == *.sh ]] ; then
-       ./$testcaseScript > >(tee -a $resultsPath/${testcaseScript}.stdout.txt) 2> >(tee -a $resultsPath/${testcaseScript}.stderr.txt >&2)
+       bash ./$testcaseScript > >(tee -a $resultsPath/${testcaseScript}.stdout.txt) 2> >(tee -a $resultsPath/${testcaseScript}.stderr.txt >&2)
        if [ $? -ne 0 ]; then
          let anyfail+=1
          failed="$failed $testcase"
